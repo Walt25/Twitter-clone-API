@@ -35,5 +35,40 @@ export const USERS_MESSAGE = {
   CHECK_EMAIL_TO_RESET_PASSWORD: 'Check email to reset password',
   FORGOT_PASSWORD_TOKEN_IS_REQUIRED: 'Forgot password token is required',
   VERIFY_FORGOT_PASSWORD_TOKEN_SUCCESSFUL: 'Verify forgot password token successful',
-  FORGOT_PASSWORD_TOKEN_IS_INVALID: 'Forgot password token is invalid'
-} as const
+  FORGOT_PASSWORD_TOKEN_IS_INVALID: 'Forgot password token is invalid',
+  RESET_PASSWORD_SUCCESSFUL: 'Reset password successful',
+  GET_ME_SUCCESSFUL: 'Get my profile successful',
+  USER_NOT_VERIFIED: 'User not verified',
+  BIO_MUST_BE_STRING: 'Bio must be string',
+  BIO_LENGTH: 'Bio length must be from 1 to 200',
+  LOCATION_MUST_BE_STRING: 'Location must be string',
+  LOCATION_LENGTH: 'Location length must be from 1 to 200',
+  WEBSITE_MUST_BE_URL: 'Website must be url',
+  USERNAME_MUST_BE_STRING: 'Username must be string',
+  USERNAME_INVALID: 'Username must be 4-15 characters long, and contain only letters, numbers, and underscores',
+  AVATAR_MUST_BE_URL: 'Avatar must be url',
+  UPDATE_ME_SUCCESSFUL: 'Update my profile successful',
+  GET_PROFILE_SUCCESSFUL: 'Get profile successful',
+  FOLLOW_SUCCESSFUL: 'Follow successful',
+  INVALID_USER_ID: 'Invalid followed user id',
+  FOLLOWED: 'Followed',
+  ALREADY_UNFOLLOWED: 'Already unfollowed',
+  UNFOLLOW_SUCCESSFUL: 'Unfollow successful',
+  USERNAME_EXISTS: 'Username exists',
+  OLD_PASSWORD_IS_INCORRECT: 'Old password is incorrect',
+  CHANGE_PASSWORD_SUCCESSFUL: 'Change password successful',
+  GMAIL_NOT_VERIFIED: 'Gmail not verified',
+  REFRESH_TOKEN_SUCCESSFUL: 'Refresh token successful'
+}
+
+export const TWEETS_MESSAGE = {
+  INVALID_TYPE: 'Invalid type',
+  INVALID_AUDIENCE: 'Invalid audience',
+  PARENT_ID_MUST_BE_A_VALID_TWEET_ID: 'Parent id must be a valid tweet id',
+  PARENT_ID_MUST_NULL: 'Parent id must null',
+  CONTENT_MUST_NOT_BE_EMPTY: 'Content must not be empty',
+  CONTENT_MUST_BE_EMPTY: 'Content must be empty',
+  HASHTAGS_MUST_BE_STRING: 'Hashtags must be string',
+  MENTIONS_MUST_BE_AN_ARRAY_OF_USER_ID: 'Mentions must be an array of user id',
+  MEDIA_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'Media must be an array of media object'
+}

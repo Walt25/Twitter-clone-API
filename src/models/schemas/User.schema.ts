@@ -15,7 +15,7 @@ interface Usertype {
 
   //Optional
   bio?: string
-  locale?: string
+  location?: string
   website?: string
   username?: string
   avatar?: string
@@ -36,7 +36,7 @@ export default class User {
 
   //Optional
   bio: string
-  locale: string
+  location: string
   website: string
   username: string
   avatar: string
@@ -57,7 +57,7 @@ export default class User {
 
     //Optional
     this.bio = user.bio || ''
-    this.locale = user.locale || ''
+    this.location = user.location || ''
     this.website = user.website || ''
     this.username = user.username || ''
     this.avatar = user.avatar || ''
