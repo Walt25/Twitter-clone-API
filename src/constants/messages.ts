@@ -70,5 +70,6 @@ export const TWEETS_MESSAGE = {
   CONTENT_MUST_BE_EMPTY: 'Content must be empty',
   HASHTAGS_MUST_BE_STRING: 'Hashtags must be string',
   MENTIONS_MUST_BE_AN_ARRAY_OF_USER_ID: 'Mentions must be an array of user id',
-  MEDIA_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'Media must be an array of media object'
+  MEDIA_MUST_BE_AN_ARRAY_OF_MEDIA_OBJECT: 'Media must be an array of media object',
+  TWEET_IS_NOT_VISIBLE: 'Tweet is not visible'
 }

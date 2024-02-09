@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { access } from 'fs'
+import { get } from 'lodash'
 import { bookmarksTweetController, unbookmarksTweetController } from '~/controllers/bookmarks.controller'
 import { createTweetController } from '~/controllers/tweets.controllers'
 import { createTweetValidator } from '~/middlewares/tweets.middlewares'

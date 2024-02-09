@@ -44,7 +44,6 @@ export const registerController = async (
   next: NextFunction
 ) => {
   const result = await usersService.register(req.body)
-
   return res.status(200).json({
     message: USERS_MESSAGE.REGISTER_SUCCESSFULY,
     result
@@ -97,7 +96,7 @@ export const resendVerifyEmailController = async (req: Request, res: Response, n
   if (user.verify === UserVerifyStatus.Verified) {
     return res.json({ message: USERS_MESSAGE.EMAIL_ALREADY_VERIFIED })
   }
-  const result = await usersService.resendVerifyEmail(userId)
+  const result = await usersService.resendVerifyEmail(userId, user.email)
   return res.json(result)
 }
 
@@ -106,8 +105,12 @@ export const forgotPasswordController = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { _id, verify } = req.user as User
-  const result = await usersService.forgotPassword({ user_id: (_id as ObjectId).toString(), verify: verify })
+  const { _id, verify, email } = req.user as User
+  const result = await usersService.forgotPassword({
+    user_id: (_id as ObjectId).toString(),
+    verify: verify,
+    email: email
+  })
   return res.json(result)
 }
 

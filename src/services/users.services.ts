@@ -15,6 +15,7 @@ import axios from 'axios'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { verify } from 'crypto'
+import { sendForgotPasswordEmail, sendVerifyRegisterEmail } from '~/utils/email'
 config()
 class UsersService {
   private signAccessToken({ userId, verify }: { userId: string; verify: UserVerifyStatus }) {
@@ -35,7 +36,11 @@ class UsersService {
   }
   async register(payload: RegisterReqBody) {
     const result = await databaseService.users.insertOne(
-      new User({ ...payload, date_of_birth: new Date(payload.date_of_birth), password: hashPassword(payload.password) })
+      new User({
+        ...payload,
+        date_of_birth: new Date(payload.date_of_birth),
+        password: hashPassword(payload.password)
+      })
     )
     const user_id = result.insertedId.toString()
     const [access_token, refresh_token] = await this.signAccessAndRefreshToken({
@@ -54,6 +59,8 @@ class UsersService {
     await databaseService.refreshTokens.insertOne(
       new RefreshToken({ user_id: new ObjectId(user_id), token: refresh_token })
     )
+    await sendVerifyRegisterEmail(payload.email, email_verify_token)
+
     return {
       access_token,
       refresh_token,
@@ -204,11 +211,12 @@ class UsersService {
       refresh_token
     }
   }
-  async resendVerifyEmail(user_id: string) {
+  async resendVerifyEmail(user_id: string, email: string) {
     const email_verify_token = await this.signEmailVerifyToken({
       userId: user_id.toString(),
       verify: UserVerifyStatus.Unverified
     })
+    await sendVerifyRegisterEmail(email, email_verify_token)
     await databaseService.users.updateOne(
       { _id: new ObjectId(user_id) },
       {
@@ -222,12 +230,13 @@ class UsersService {
       message: USERS_MESSAGE.RESEND_VERIFY_EMAIL_SUCCESSFUL
     }
   }
-  async forgotPassword({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+  async forgotPassword({ user_id, verify, email }: { user_id: string; verify: UserVerifyStatus; email: string }) {
     const forgot_password_token = await this.signForgotPasswordToken({ userId: user_id.toString(), verify: verify })
     await databaseService.users.updateOne({ _id: new ObjectId(user_id) }, [
       { $set: { forgot_password_token, updated_at: '$$NOW' } }
     ])
     console.log(forgot_password_token)
+    await sendForgotPasswordEmail(email, forgot_password_token)
     return {
       message: USERS_MESSAGE.CHECK_EMAIL_TO_RESET_PASSWORD
     }

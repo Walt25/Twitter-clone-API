@@ -13,7 +13,8 @@ import { ParamsDictionary } from 'express-serve-static-core'
 import { tweetsService } from '~/services/Tweets.services'
 import { TokenPayload } from '~/models/requests/User.requests'
 import databaseService from '~/services/database.services'
-import { ObjectId } from 'mongodb'
+import { ObjectId, WithId } from 'mongodb'
+import Tweet from '~/models/schemas/Tweet.schema'
 export const createTweetController = async (
   req: Request<ParamsDictionary, any, TweetReqBody>,
   res: Response,
@@ -24,5 +25,18 @@ export const createTweetController = async (
   return res.json({
     message: 'Create tweet successfully',
     result
+  })
+}
+
+export const getTweetController = async (req: Request, res: Response, next: NextFunction) => {
+  const result = await tweetsService.increaseView(req.params.tweet_id, req.decoded_authorization?.userId || '')
+  const tweet = {
+    ...req.tweet,
+    guest_views: (result as WithId<Tweet>).guest_views,
+    user_views: (result as WithId<Tweet>).user_views
+  }
+  return res.json({
+    message: 'Get tweet successfully',
+    result: tweet
   })
 }
