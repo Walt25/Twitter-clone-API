@@ -9,16 +9,20 @@ import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from './constants/dir'
 import staticRouter from './routes/static.routes'
 import tweetsRouter from './routes/tweets.routes'
 import bookmarksRouter from './routes/bookmarks.routes'
-
+import { createServer } from 'http'
+import { Server } from 'socket.io'
 import '~/utils/s3'
+import cors from 'cors'
+
 config()
 databaseService.connect()
 
 const app = express()
-
+// const httpServer = createServer()
 //tao folder uploads
 initFolder()
 console.log(UPLOAD_IMAGE_DIR)
+app.use(cors())
 app.use(express.json())
 app.use('/static/video', express.static(UPLOAD_VIDEO_DIR))
 app.use('/users', usersRouter)
@@ -27,6 +31,40 @@ app.use('/static', staticRouter)
 app.use('/tweets', tweetsRouter)
 app.use('/bookmarks', bookmarksRouter)
 app.use(defaultErrorHandler)
-app.listen(process.env.PORT, () => {
+
+const httpServer = app.listen(process.env.PORT, () => {
   console.log(`Example app listening at http://localhost:${process.env.PORT}`)
+})
+const io = new Server(httpServer, {
+  /* options */
+  cors: {
+    origin: ['http://localhost:3001'],
+    credentials: true
+  }
+})
+const users: {
+  [key: string]: {
+    socket_id: string
+  }
+} = {}
+io.on('connection', (socket) => {
+  // ..
+  console.log(`socket ${socket.id} connected`)
+  const user_id = socket.handshake.auth._id
+  users[user_id] = {
+    socket_id: socket.id
+  }
+  console.log(users)
+  socket.on('private message', (data) => {
+    const receiver_socket_id = users[data.to].socket_id
+    socket.to(receiver_socket_id).emit('receive private message', {
+      content: data.content,
+      from: user_id
+    })
+  })
+  socket.on('disconnect', () => {
+    delete users[user_id]
+    console.log(`socket ${socket.id} disconnected`)
+    console.log(users)
+  })
 })

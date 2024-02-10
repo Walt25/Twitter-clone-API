@@ -3,6 +3,7 @@ import path from 'path'
 import { Request } from 'express'
 import { File } from 'formidable'
 import { UPLOAD_IMAGE_TEMP_DIR, UPLOAD_VIDEO_DIR, UPLOAD_VIDEO_TEMP_DIR } from '~/constants/dir'
+import { uploadFileToS3 } from './s3'
 
 export const initFolder = () => {
   ;[UPLOAD_IMAGE_TEMP_DIR, UPLOAD_VIDEO_TEMP_DIR].forEach((dir) => {
@@ -71,7 +72,6 @@ export const handleUploadVideo = async (req: Request) => {
         fs.renameSync(video.filepath, video.filepath + '.' + ext)
         video.newFilename = video.newFilename + '.' + ext
       })
-
       resolve(files.video as File[])
     })
   })
