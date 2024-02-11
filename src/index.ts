@@ -13,6 +13,9 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import '~/utils/s3'
 import cors from 'cors'
+import Conversation from './models/schemas/Conversation.schema'
+import conversationRouter from './routes/conversation.routes'
+import { ObjectId } from 'mongodb'
 
 config()
 databaseService.connect()
@@ -30,6 +33,7 @@ app.use('/medias', mediasRouter)
 app.use('/static', staticRouter)
 app.use('/tweets', tweetsRouter)
 app.use('/bookmarks', bookmarksRouter)
+app.use('/conversations', conversationRouter)
 app.use(defaultErrorHandler)
 
 const httpServer = app.listen(process.env.PORT, () => {
@@ -55,8 +59,18 @@ io.on('connection', (socket) => {
     socket_id: socket.id
   }
   console.log(users)
-  socket.on('private message', (data) => {
-    const receiver_socket_id = users[data.to].socket_id
+  socket.on('private message', async (data) => {
+    const receiver_socket_id = users[data.to]?.socket_id
+    if (!receiver_socket_id) {
+      return
+    }
+    await databaseService.conversations.insertOne(
+      new Conversation({
+        sender_id: new ObjectId(data.from),
+        receiver_id: new ObjectId(data.to),
+        content: data.content
+      })
+    )
     socket.to(receiver_socket_id).emit('receive private message', {
       content: data.content,
       from: user_id
